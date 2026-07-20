@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inline Spoof</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #383838;
+      --primary-container: #eaddff;
+      --surface: #fef7ff;
+      --outline: #79747e;
+      --outline-variant: #e7e0ec;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Roboto, sans-serif; background: var(--surface); color: #1d1b20; }
+    .app { max-width: 420px; min-height: 100vh; margin: auto; position: relative; padding-bottom: 86px; }
+
+    .topbar { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 22px; background: var(--surface); position: sticky; top: 0; z-index: 10; gap: 10px; }
+    .search-box { flex: 1; background: var(--outline-variant); border-radius: 20px; display: flex; align-items: center; padding: 0 12px; height: 40px; }
+    .search-box input { background: none; border: none; outline: none; width: 100%; margin-left: 8px; font-size: 14px; }
+    .search-box input::placeholder { color: var(--outline); }
+
+    .content { padding: 12px 16px; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .label { font-size: 12px; color: var(--primary); margin: 18px 0 12px; font-weight: 500; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.8px; }
+    .label:first-child { margin-top: 0; }
+
+    .card { min-height: 72px; background: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 14px; border: 1px solid var(--outline-variant); cursor: pointer; transition: background 0.2s; user-select: none; -webkit-tap-highlight-color: transparent; }
+    .card.selected { background: var(--primary-container); border-color: var(--primary); }
+
+    .icon { width: 40px; height: 40px; border-radius: 10px; background: var(--outline-variant); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .info { flex: 1; overflow: hidden; }
+    .name { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pkg { font-size: 12px; color: var(--outline); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .check { display: none; color: var(--primary); }
+    .card.selected .check { display: block; }
+
+    .setting-card { background: #ffffff; border: 1px solid var(--outline-variant); border-radius: 12px; padding: 16px; margin-bottom: 8px; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; }
+    .input-field { width: 100%; margin-top: 12px; padding: 12px; border-radius: 8px; border: 1px solid var(--outline-variant); background: var(--surface); outline: none; transition: border-color 0.2s; }
+    .input-field:focus { border-color: var(--primary); }
+
+    .switch { width: 52px; height: 32px; position: relative; }
+    .switch input { display: none; }
+    .slider { position: absolute; inset: 0; border-radius: 20px; background: var(--outline); transition: 0.3s; }
+    .slider:before { content: ""; position: absolute; width: 24px; height: 24px; left: 4px; top: 4px; background: white; border-radius: 50%; transition: 0.2s; }
+    .switch input:checked + .slider { background: var(--primary); }
+    .switch input:checked + .slider:before { transform: translateX(20px); }
+
+    .navbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); max-width: 420px; width: 100%; height: 80px; background: #fffbfe; border-top: 1px solid var(--outline-variant); display: flex; z-index: 100; }
+    .nav { flex: 1; border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; color: #49454f; cursor: pointer; }
+    .nav-icon { width: 64px; height: 32px; border-radius: 16px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .nav.active { color: #1d1b20; font-weight: 500; }
+    .nav.active .nav-icon { background: var(--primary-container); }
+
+    #loading { text-align: center; padding: 40px; color: var(--outline); }
+
+    #context-menu { display: none; position: fixed; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 1000; padding: 8px 0; min-width: 200px; border: 1px solid var(--outline-variant); overflow: hidden; }
+    #context-menu div { padding: 12px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 12px; transition: background 0.2s; }
+    #context-menu div:hover { background: var(--outline-variant); }
+
+    #dump-dialog { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 16px; }
+    .dialog-container { background: white; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .dialog-header { padding: 20px; border-bottom: 1px solid var(--outline-variant); }
+    .dialog-body { flex: 1; overflow-y: auto; padding: 8px; background: #f8f9fa; }
+    .dialog-footer { padding: 12px 20px; border-top: 1px solid var(--outline-variant); display: flex; justify-content: flex-end; gap: 12px; }
+
+    .map-card { background: white; border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--outline-variant); font-family: monospace; font-size: 11px; cursor: pointer; transition: 0.2s; }
+    .map-card:hover { border-color: var(--primary); background: var(--primary-container); }
+    .map-header { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--primary); font-weight: 600; font-size: 12px; }
+    .map-path { color: var(--outline); word-break: break-all; margin-top: 6px; font-size: 10px; line-height: 1.4; }
+    .map-perms { background: #eee; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="search-box">
+      <span class="material-icons-round" style="font-size: 20px; color: var(--outline)">search</span>
+      <input type="text" id="search-input" placeholder="Search apps..." oninput="filterApps()">
+    </div>
+    <button onclick="refreshApps()" style="background:none; border:none; color:var(--primary); cursor:pointer;">
+      <span class="material-icons-round">refresh</span>
+    </button>
+  </div>
+
+  <div class="content">
+    <div id="home" class="page active">
+      <div id="running-apps-section" style="display:none">
+        <div class="label"><span>Running apps</span></div>
+        <div id="running-app-list"></div>
+      </div>
+
+      <div class="label">
+        <span>Installed apps</span>
+        <span id="app-count">0 apps</span>
+      </div>
+      <div id="loading">Loading apps</div>
+      <div id="app-list"></div>
+    </div>
+
+    <div id="settings" class="page">
+      <div class="label">Module Configuration</div>
+      <div class="setting-card">
+        <div class="setting-row">
+          <div>
+            <div style="font-weight:500">Enable Zygisk Bypass</div>
+            <div style="font-size:12px; color:var(--outline)">Auto invalidate inline hooks</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="enabled-toggle" onchange="saveConfig()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="margin-top: 20px; border-top: 1px solid var(--outline-variant); padding-top: 16px;">
+          <div style="font-weight:500; font-size:14px;">Target Library Name</div>
+          <input type="text" id="lib-name" class="input-field" placeholder="libart.so" oninput="saveConfig()">
+          <div style="font-size:11px; color:var(--outline); margin-top: 8px;">Hooks in this library will be cleaned at app launch.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <button class="nav active" id="nav-home" onclick="openTab('home', this)">
+      <div class="nav-icon"><span class="material-icons-round">home</span></div>Home
+    </button>
+    <button class="nav" id="nav-settings" onclick="openTab('settings', this)">
+      <div class="nav-icon"><span class="material-icons-round">settings</span></div>Settings
+    </button>
+  </div>
+</div>
+
+<div id="context-menu">
+  <div onclick="promptDumpLib()">
+    <span class="material-icons-round" style="font-size:20px;">memory</span>
+    <span>Explore Memory Maps</span>
+  </div>
+</div>
+
+<div id="dump-dialog">
+    <div class="dialog-container">
+        <div class="dialog-header">
+            <div style="font-weight:600; font-size:18px; margin-bottom:14px;">Process Memory Maps</div>
+            <div class="search-box">
+                <span class="material-icons-round" style="font-size: 20px; color: var(--outline)">search</span>
+                <input type="text" id="map-search" placeholder="Filter libs, offsets, or perms..." oninput="filterMaps()">
+            </div>
+        </div>
+        <div class="dialog-body">
+            <div id="map-loading" style="text-align:center; padding:20px; color:var(--outline);">Reading maps from /proc...</div>
+            <div id="map-entries"></div>
+        </div>
+        <div class="dialog-footer">
+            <button onclick="closeDumpDialog()" style="background:none; border:none; color:var(--primary); font-weight:600; padding:10px; cursor:pointer;">CLOSE</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let _0x312e;const MODULE_ID="foops_kooh_enilni".split("").reverse().join("");_0x312e='\u0066\u0066\u006F\u0063\u0066\u006D';var _0x6g8ebd=(442465^442464)+(700413^700414);const CONFIG_PATH=`/data/adb/modules/${MODULE_ID}/config.txt`;_0x6g8ebd=115244^115245;let selectedPackages=new Set();let config={'\u0065\u006E\u0061\u0062\u006C\u0065\u0064':false,'\u006C\u0069\u0062\u004E\u0061\u006D\u0065':"\u006C\u0069\u0062\u0061\u0072\u0074\u002E\u0073\u006F",'\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073':[]};let allApps=[];let currentTargetPkg="";let longClickTimer;let allMaps=[];function exec(cmd){return new Promise(resolve=>{const _0xea525a=`cb_${Date['\u006E\u006F\u0077']()}_${Math['\u0066\u006C\u006F\u006F\u0072'](Math['\u0072\u0061\u006E\u0064\u006F\u006D']()*(736981^736573))}`;window[_0xea525a]=(errno,stdout,stderr)=>{delete window[_0xea525a];resolve(stdout||"");};try{if(window['\u006B\u0073\u0075']&&window['\u006B\u0073\u0075']['\u0065\u0078\u0065\u0063']){window['\u006B\u0073\u0075']['\u0065\u0078\u0065\u0063'](cmd,JSON['\u0073\u0074\u0072\u0069\u006E\u0067\u0069\u0066\u0079']({}),_0xea525a);}else{resolve("");}}catch(e){resolve("");}});}async function getPackagesInfo(packages){try{if(window['\u006B\u0073\u0075']&&window['\u006B\u0073\u0075']['\u0067\u0065\u0074\u0050\u0061\u0063\u006B\u0061\u0067\u0065\u0073\u0049\u006E\u0066\u006F']){let _0xede;const _0x82d=window['\u006B\u0073\u0075']['\u0067\u0065\u0074\u0050\u0061\u0063\u006B\u0061\u0067\u0065\u0073\u0049\u006E\u0066\u006F'](JSON['\u0073\u0074\u0072\u0069\u006E\u0067\u0069\u0066\u0079'](packages));_0xede=(547895^547888)+(570936^570941);return JSON['\u0070\u0061\u0072\u0073\u0065'](_0x82d);}}catch(e){}return[];}async function getRunningPackages(_0x68cf6g){const _0x2a6ecd=await exec("\u0070\u0073\u0020\u002D\u0041\u0020\u002D\u006F\u0020\u004E\u0041\u004D\u0045");const _0x92cced=_0x2a6ecd['\u0073\u0070\u006C\u0069\u0074']("\u000A")['\u006D\u0061\u0070'](n=>n['\u0074\u0072\u0069\u006D']());_0x68cf6g=(188749^188744)+(163849^163852);return new Set(_0x92cced);}function filterApps(){const _0x3cc74c=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0073\u0065\u0061\u0072\u0063\u0068\u002D\u0069\u006E\u0070\u0075\u0074")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']();renderAppList(allApps['\u0066\u0069\u006C\u0074\u0065\u0072'](app=>app['\u006E\u0061\u006D\u0065']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']()['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073'](_0x3cc74c)||app['\u0070\u006B\u0067']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']()['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073'](_0x3cc74c)));}async function loadApps(){var _0x_0x36c=(653616^653617)+(258944^258953);const _0xef_0x9a8=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0061\u0070\u0070\u002D\u006C\u0069\u0073\u0074");_0x_0x36c='\u006E\u0063\u006F\u0069\u006C\u006B';var _0x74a2df=(497375^497374)+(543352^543359);const _0x9b29a=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0075\u006E\u006E\u0069\u006E\u0067\u002D\u0061\u0070\u0070\u002D\u006C\u0069\u0073\u0074");_0x74a2df=511308^511300;_0xef_0x9a8['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="";_0x9b29a['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="";document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("gnidaol".split("").reverse().join(""))['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="kcolb".split("").reverse().join("");const _0x1cf=await exec("\u0070\u006D\u0020\u006C\u0069\u0073\u0074\u0020\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073\u0020\u002D\u0033");const _0x3457be=_0x1cf['\u0073\u0070\u006C\u0069\u0074']("\u000A")['\u006D\u0061\u0070'](line=>line['\u0072\u0065\u0070\u006C\u0061\u0063\u0065']("\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u003A",'')['\u0074\u0072\u0069\u006D']())['\u0066\u0069\u006C\u0074\u0065\u0072'](p=>p)['\u0073\u006F\u0072\u0074']();var _0x8212bg=(882238^882235)+(410051^410054);const _0x5f137c=await getRunningPackages();_0x8212bg=156599^156607;var _0x9bdcb=(130667^130659)+(240254^240251);const _0xf5193a=await getPackagesInfo(_0x3457be);_0x9bdcb='\u0063\u006C\u0071\u006E\u0066\u006C';allApps=_0x3457be['\u006D\u0061\u0070'](pkg=>{const _0x7bd=_0xf5193a['\u0066\u0069\u006E\u0064'](a=>a['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u004E\u0061\u006D\u0065']===pkg)||{'\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u004E\u0061\u006D\u0065':pkg,'\u0061\u0070\u0070\u004C\u0061\u0062\u0065\u006C':pkg};return{"pkg":pkg,'\u006E\u0061\u006D\u0065':_0x7bd['\u0061\u0070\u0070\u004C\u0061\u0062\u0065\u006C'],'\u0069\u0073\u0052\u0075\u006E\u006E\u0069\u006E\u0067':_0x5f137c['\u0068\u0061\u0073'](pkg)};});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("gnidaol".split("").reverse().join(""))['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u006E\u006F\u006E\u0065";renderAppList(allApps);}function renderAppList(apps,_0x919be,_0xcfb){const _0x575b3e=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("tsil-ppa".split("").reverse().join(""));_0x919be=427099^427101;const _0x97d12a=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0075\u006E\u006E\u0069\u006E\u0067\u002D\u0061\u0070\u0070\u002D\u006C\u0069\u0073\u0074");_0xcfb='\u0065\u006B\u006A\u0065\u006E\u0062';const _0x1edfaa=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0075\u006E\u006E\u0069\u006E\u0067\u002D\u0061\u0070\u0070\u0073\u002D\u0073\u0065\u0063\u0074\u0069\u006F\u006E");_0x575b3e['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="";_0x97d12a['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="";var _0xe_0xb43=(634407^634405)+(964167^964163);const _0xa2b16e=apps['\u0066\u0069\u006C\u0074\u0065\u0072'](a=>a['\u0069\u0073\u0052\u0075\u006E\u006E\u0069\u006E\u0067']);_0xe_0xb43=(328491^328483)+(838972^838969);if(_0xa2b16e['\u006C\u0065\u006E\u0067\u0074\u0068']>(734303^734303)){_0x1edfaa['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u0062\u006C\u006F\u0063\u006B";_0xa2b16e['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](app=>_0x97d12a['\u0061\u0070\u0070\u0065\u006E\u0064\u0043\u0068\u0069\u006C\u0064'](createAppCard(app)));}else{_0x1edfaa['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u006E\u006F\u006E\u0065";}apps['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](app=>_0x575b3e['\u0061\u0070\u0070\u0065\u006E\u0064\u0043\u0068\u0069\u006C\u0064'](createAppCard(app)));document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0061\u0070\u0070\u002D\u0063\u006F\u0075\u006E\u0074")['\u0069\u006E\u006E\u0065\u0072\u0054\u0065\u0078\u0074']=`${apps['\u006C\u0065\u006E\u0067\u0074\u0068']} apps`;}function createAppCard(app,_0x2cface,_0xda39b){const _0x2f8a=app['\u0070\u006B\u0067'];_0x2cface=(709611^709608)+(507529^507530);const _0x3f7ee=document['\u0063\u0072\u0065\u0061\u0074\u0065\u0045\u006C\u0065\u006D\u0065\u006E\u0074']("vid".split("").reverse().join(""));_0xda39b='\u0064\u0065\u0063\u0064\u0061\u0064';_0x3f7ee['\u0063\u006C\u0061\u0073\u0073\u004E\u0061\u006D\u0065']="\u0063\u0061\u0072\u0064"+(selectedPackages['\u0068\u0061\u0073'](_0x2f8a)?"detceles ".split("").reverse().join(""):'');_0x3f7ee['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']=`
+             <div class="icon"><img src="ksu://icon/${_0x2f8a}" onerror="this.outerHTML='<span class=&quot;material-icons-round&quot;>android</span>'"></div>
+             <div class="info">
+                 <div class="name">${app['\u006E\u0061\u006D\u0065']}</div>
+                 <div class="pkg">${_0x2f8a}</div>
+             </div>
+             <span class="material-icons-round check">check_circle</span>
+         `;_0x3f7ee['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u006D\u006F\u0075\u0073\u0065\u0064\u006F\u0077\u006E",e=>startLongClick(e,_0x2f8a));_0x3f7ee['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0074\u006F\u0075\u0063\u0068\u0073\u0074\u0061\u0072\u0074",e=>startLongClick(e,_0x2f8a));_0x3f7ee['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u006D\u006F\u0075\u0073\u0065\u0075\u0070",endLongClick);_0x3f7ee['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u006D\u006F\u0075\u0073\u0065\u006C\u0065\u0061\u0076\u0065",endLongClick);_0x3f7ee['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0074\u006F\u0075\u0063\u0068\u0065\u006E\u0064",endLongClick);_0x3f7ee['\u006F\u006E\u0063\u006C\u0069\u0063\u006B']=e=>{if(e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0063\u006C\u006F\u0073\u0065\u0073\u0074']("unem-txetnoc#".split("").reverse().join("")))return;if(selectedPackages['\u0068\u0061\u0073'](_0x2f8a)){selectedPackages['\u0064\u0065\u006C\u0065\u0074\u0065'](_0x2f8a);_0x3f7ee['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0072\u0065\u006D\u006F\u0076\u0065']("detceles".split("").reverse().join(""));}else{selectedPackages['\u0061\u0064\u0064'](_0x2f8a);_0x3f7ee['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0061\u0064\u0064']("\u0073\u0065\u006C\u0065\u0063\u0074\u0065\u0064");}saveConfig();};return _0x3f7ee;}function startLongClick(e,pkg){currentTargetPkg=pkg;longClickTimer=setTimeout(()=>{showContextMenu(e);},839434^838994);}function endLongClick(){clearTimeout(longClickTimer);}function showContextMenu(e,_0x5af,_0x9cc8c,_0xaaad,_0x71c,_0x78b7bf){const _0xe6729c=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0063\u006F\u006E\u0074\u0065\u0078\u0074\u002D\u006D\u0065\u006E\u0075");_0x5af='\u0065\u0061\u0061\u0066\u0066\u0071';_0xe6729c['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u0062\u006C\u006F\u0063\u006B";const x=e['\u0070\u0061\u0067\u0065\u0058']||(e['\u0074\u006F\u0075\u0063\u0068\u0065\u0073']?e['\u0074\u006F\u0075\u0063\u0068\u0065\u0073'][882165^882165]['\u0070\u0061\u0067\u0065\u0058']:703929^703929);const y=e['\u0070\u0061\u0067\u0065\u0059']||(e['\u0074\u006F\u0075\u0063\u0068\u0065\u0073']?e['\u0074\u006F\u0075\u0063\u0068\u0065\u0073'][430051^430051]['\u0070\u0061\u0067\u0065\u0059']:420770^420770);_0x9cc8c=115764^115764;_0x71c=885036^885220;_0xaaad='\u006F\u0069\u006A\u0071\u0063\u006A';const _0x6gd=window['\u0069\u006E\u006E\u0065\u0072\u0057\u0069\u0064\u0074\u0068'];_0x78b7bf=(593810^593809)+(808966^808965);_0xe6729c['\u0073\u0074\u0079\u006C\u0065']['\u006C\u0065\u0066\u0074']=(x+_0x71c>_0x6gd?_0x6gd-_0x71c-(798802^798808):x)+"xp".split("").reverse().join("");_0xe6729c['\u0073\u0074\u0079\u006C\u0065']['\u0074\u006F\u0070']=y+"\u0070\u0078";setTimeout(()=>document['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("kcilc".split("").reverse().join(""),hideContextMenu),702633^702627);}function hideContextMenu(){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("unem-txetnoc".split("").reverse().join(""))['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="enon".split("").reverse().join("");document['\u0072\u0065\u006D\u006F\u0076\u0065\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0063\u006C\u0069\u0063\u006B",hideContextMenu);}async function promptDumpLib(){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("golaid-pmud".split("").reverse().join(""))['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u0066\u006C\u0065\u0078";document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("seirtne-pam".split("").reverse().join(""))['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="";document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006D\u0061\u0070\u002D\u006C\u006F\u0061\u0064\u0069\u006E\u0067")['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u0062\u006C\u006F\u0063\u006B";var _0xec35bg=(518699^518702)+(832457^832449);const _0xgfd7fa=(await exec(`pidof ${currentTargetPkg}`))['\u0074\u0072\u0069\u006D']();_0xec35bg=(126569^126570)+(550652^550649);if(!_0xgfd7fa){await exec(`toast "Process ${currentTargetPkg} is not running!"`);closeDumpDialog();return;}const _0x4_0x1e1=await exec(`cat /proc/${_0xgfd7fa}/maps`);allMaps=_0x4_0x1e1['\u0073\u0070\u006C\u0069\u0074']("\u000A")['\u0066\u0069\u006C\u0074\u0065\u0072'](l=>l['\u0074\u0072\u0069\u006D']())['\u006D\u0061\u0070'](line=>{const _0x1846ge=line['\u0074\u0072\u0069\u006D']()['\u0073\u0070\u006C\u0069\u0074'](new RegExp('\u005C\u0073\u002B',""));return{'\u0072\u0061\u006E\u0067\u0065':_0x1846ge[234370^234370],"perms":_0x1846ge[435379^435378],'\u006F\u0066\u0066\u0073\u0065\u0074':_0x1846ge[475767^475765],'\u0064\u0065\u0076':_0x1846ge[752763^752760],"inode":_0x1846ge[349410^349414],"path":_0x1846ge['\u0073\u006C\u0069\u0063\u0065'](489131^489134)['\u006A\u006F\u0069\u006E']("\u0020")||"\u005B\u0061\u006E\u006F\u006E\u0079\u006D\u006F\u0075\u0073\u005D","raw":line};});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006D\u0061\u0070\u002D\u006C\u006F\u0061\u0064\u0069\u006E\u0067")['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u006E\u006F\u006E\u0065";renderMaps(allMaps);}function filterMaps(){var _0x60664b=(668465^668465)+(694157^694157);const q=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006D\u0061\u0070\u002D\u0073\u0065\u0061\u0072\u0063\u0068")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']();_0x60664b=(652348^652349)+(334613^334608);const _0xddb85f=allMaps['\u0066\u0069\u006C\u0074\u0065\u0072'](m=>m['\u0070\u0061\u0074\u0068']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']()['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073'](q)||m['\u0072\u0061\u006E\u0067\u0065']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']()['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073'](q)||m['\u0070\u0065\u0072\u006D\u0073']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']()['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073'](q)||m['\u0072\u0061\u0077']['\u0074\u006F\u004C\u006F\u0077\u0065\u0072\u0043\u0061\u0073\u0065']()['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073'](q));renderMaps(_0xddb85f);}function renderMaps(maps){const _0x37g0ae=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("seirtne-pam".split("").reverse().join(""));_0x37g0ae['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="";maps['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](m=>{let _0x1540g;const _0x34b6fb=m['\u0070\u0065\u0072\u006D\u0073']['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073']("\u0078");_0x1540g='\u0062\u006B\u0067\u0062\u006B\u0064';const _0x5db=m['\u0070\u0065\u0072\u006D\u0073']['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073']("\u0077");let _0x810fc;const _0xf882f=m['\u0070\u0061\u0074\u0068']['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073']("\u002E\u0061\u0070\u006B");_0x810fc=(781670^781670)+(313318^313317);const _0x882ebd=document['\u0063\u0072\u0065\u0061\u0074\u0065\u0045\u006C\u0065\u006D\u0065\u006E\u0074']("\u0064\u0069\u0076");_0x882ebd['\u0063\u006C\u0061\u0073\u0073\u004E\u0061\u006D\u0065']="drac-pam".split("").reverse().join("");if(_0x34b6fb)_0x882ebd['\u0073\u0074\u0079\u006C\u0065']['\u0062\u006F\u0072\u0064\u0065\u0072\u004C\u0065\u0066\u0074']="\u0034\u0070\u0078\u0020\u0073\u006F\u006C\u0069\u0064\u0020\u0023\u0066\u0066\u0035\u0032\u0035\u0032";else if(_0x5db)_0x882ebd['\u0073\u0074\u0079\u006C\u0065']['\u0062\u006F\u0072\u0064\u0065\u0072\u004C\u0065\u0066\u0074']="701cff# dilos xp4".split("").reverse().join("");_0x882ebd['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']=`
+                 <div class="map-header">
+                     <span style="${_0x34b6fb?"dlob:thgiew-tnof ;f2f23d#:roloc".split("").reverse().join(""):''}">${m['\u0072\u0061\u006E\u0067\u0065']}</span>
+                     <span class="map-perms" style="background:${_0x34b6fb?"\u0023\u0066\u0066\u0065\u0062\u0065\u0065":_0x5db?"1e8fff#".split("").reverse().join(""):"\u0023\u0065\u0065\u0065"}; color:${_0x34b6fb?"\u0023\u0063\u0036\u0032\u0038\u0032\u0038":_0x5db?"\u0023\u0038\u0032\u0037\u0037\u0031\u0037":"\u0023\u0036\u0036\u0036"}">${m['\u0070\u0065\u0072\u006D\u0073']}</span>
+                 </div>
+                 <div class="map-path" style="${_0xf882f?"\u0063\u006F\u006C\u006F\u0072\u003A\u0023\u0031\u0061\u0037\u0033\u0065\u0038\u003B\u0020\u0066\u006F\u006E\u0074\u002D\u0077\u0065\u0069\u0067\u0068\u0074\u003A\u0036\u0030\u0030":''}">
+                     ${m['\u0070\u0061\u0074\u0068']}
+                     ${m['\u006F\u0066\u0066\u0073\u0065\u0074']!=="00000000".split("").reverse().join("")?"\u003C\u0062\u0072\u003E\u003C\u0073\u0070\u0061\u006E\u0020\u0073\u0074\u0079\u006C\u0065\u003D\u0022\u006F\u0070\u0061\u0063\u0069\u0074\u0079\u003A\u0030\u002E\u0036\u003B\u0020\u0066\u006F\u006E\u0074\u002D\u0073\u0069\u007A\u0065\u003A\u0039\u0070\u0078\u0022\u003E\u004F\u0066\u0066\u0073\u0065\u0074\u003A\u0020"+m['\u006F\u0066\u0066\u0073\u0065\u0074']+"\u003C\u002F\u0073\u0070\u0061\u006E\u003E":''}
+                 </div>
+             `;_0x882ebd['\u006F\u006E\u0063\u006C\u0069\u0063\u006B']=()=>performDump(m);_0x37g0ae['\u0061\u0070\u0070\u0065\u006E\u0064\u0043\u0068\u0069\u006C\u0064'](_0x882ebd);});}async function performDump(map){const _0x6c31ba=currentTargetPkg;var _0xaab4ef=(677597^677588)+(674861^674853);const _0xd4eadc=(await exec(`pidof ${_0x6c31ba}`))['\u0074\u0072\u0069\u006D']();_0xaab4ef='\u006A\u006B\u0065\u0068\u0062\u0070';if(!_0xd4eadc)return;const[start,end]=map['\u0072\u0061\u006E\u0067\u0065']['\u0073\u0070\u006C\u0069\u0074']("\u002D");const _0xb3e9ef=parseInt(start,296088^296072);var _0xa2a=(156163^156165)+(756857^756849);const _0xea_0x7c4=parseInt(end,629248^629264);_0xa2a=(994262^994263)+(918086^918085);const _0xdfe2g=_0xea_0x7c4-_0xb3e9ef;let _0x063c3d=map['\u0070\u0061\u0074\u0068']['\u0073\u0070\u006C\u0069\u0074']("\u002F")['\u0070\u006F\u0070']()||"pmud".split("").reverse().join("");_0x063c3d=_0x063c3d['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp("].9-0z-a^[".split("").reverse().join(""),"ig".split("").reverse().join("")),"\u005F")+"\u005F"+start+"\u002E\u0062\u0069\u006E";await exec(`toast "Dumping region ${start}..."`);var _0x9g1ced=(132774^132774)+(202659^202659);const _0xe259b=`
+             START_DEC=${_0xb3e9ef}
+             SIZE=${_0xdfe2g}
+             OUT_FILE="/data/data/${_0x6c31ba}/${_0x063c3d}"
+             dd if=/proc/${_0xd4eadc}/mem bs=4096 skip=$((START_DEC / 4096)) count=$((SIZE / 4096 + 1)) of="$OUT_FILE" status=none
+             chmod 666 "$OUT_FILE"
+             chown $(stat -c %u /data/data/${_0x6c31ba}):$(stat -c %g /data/data/${_0x6c31ba}) "$OUT_FILE" 2>/dev/null
+             echo "DONE:$OUT_FILE"
+         `;_0x9g1ced="kbmhdj".split("").reverse().join("");const _0xd44gdd=await exec(_0xe259b);if(_0xd44gdd['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073']("\u0044\u004F\u004E\u0045")){await exec(`toast "Dumped to data/${_0x6c31ba}/${_0x063c3d}"`);}else{await exec(`toast "Dump failed!"`);}}function closeDumpDialog(){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0064\u0075\u006D\u0070\u002D\u0064\u0069\u0061\u006C\u006F\u0067")['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u006E\u006F\u006E\u0065";}async function loadConfig(){const _0x7b8de=await exec(`cat ${CONFIG_PATH}`);if(_0x7b8de){const _0x4cea6f=_0x7b8de['\u0074\u0072\u0069\u006D']()['\u0073\u0070\u006C\u0069\u0074']("\u000A");if(_0x4cea6f['\u006C\u0065\u006E\u0067\u0074\u0068']>(621545^621545)){const _0x8f447g=_0x4cea6f[522418^522418]['\u0073\u0070\u006C\u0069\u0074']("\u003A");config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064']=_0x8f447g[113776^113776]==="\u0031";config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065']=_0x8f447g[141711^141710]||"\u006C\u0069\u0062\u0061\u0072\u0074\u002E\u0073\u006F";config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']=_0x4cea6f['\u0073\u006C\u0069\u0063\u0065'](597193^597192)['\u0066\u0069\u006C\u0074\u0065\u0072'](p=>p['\u0074\u0072\u0069\u006D']());selectedPackages=new Set(config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']);}}document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0065\u006E\u0061\u0062\u006C\u0065\u0064\u002D\u0074\u006F\u0067\u0067\u006C\u0065")['\u0063\u0068\u0065\u0063\u006B\u0065\u0064']=config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064'];document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006C\u0069\u0062\u002D\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']=config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065'];}async function saveConfig(){config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0065\u006E\u0061\u0062\u006C\u0065\u0064\u002D\u0074\u006F\u0067\u0067\u006C\u0065")['\u0063\u0068\u0065\u0063\u006B\u0065\u0064'];config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006C\u0069\u0062\u002D\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']||"\u006C\u0069\u0062\u0061\u0072\u0074\u002E\u0073\u006F";config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']=Array['\u0066\u0072\u006F\u006D'](selectedPackages);const _0x411ef=`${config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064']?"\u0031":"\u0030"}:${config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065']}\n${config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']['\u006A\u006F\u0069\u006E']("\u000A")}`;await exec(`echo "${_0x411ef}" > ${CONFIG_PATH}`);}function openTab(id,btn){document['\u0071\u0075\u0065\u0072\u0079\u0053\u0065\u006C\u0065\u0063\u0074\u006F\u0072\u0041\u006C\u006C']("\u002E\u0070\u0061\u0067\u0065")['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](p=>p['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0072\u0065\u006D\u006F\u0076\u0065']("\u0061\u0063\u0074\u0069\u0076\u0065"));document['\u0071\u0075\u0065\u0072\u0079\u0053\u0065\u006C\u0065\u0063\u0074\u006F\u0072\u0041\u006C\u006C']("van.".split("").reverse().join(""))['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](n=>n['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0072\u0065\u006D\u006F\u0076\u0065']("\u0061\u0063\u0074\u0069\u0076\u0065"));document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064'](id)['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0061\u0064\u0064']("evitca".split("").reverse().join(""));btn['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0061\u0064\u0064']("\u0061\u0063\u0074\u0069\u0076\u0065");}function refreshApps(){loadApps();}window['\u006F\u006E\u006C\u006F\u0061\u0064']=()=>{const checkKsu=setInterval(async()=>{if(window['\u006B\u0073\u0075']){clearInterval(checkKsu);await loadConfig();await loadApps();}},568534^568498);};
+</script>
+</body>
+</html>
