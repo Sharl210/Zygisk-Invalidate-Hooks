@@ -20,56 +20,13 @@ android {
             abiFilters.addAll(abiList)
         }
         externalNativeBuild {
-
-            cmake {
-                cppFlags("-std=c++20")
-                arguments(
-                    "-DANDROID_STL=c++_static",
-                    "-DMODULE_NAME=$moduleId"
-                )
+            ndkBuild {
+                path("src/main/cpp/Android.mk")
+                arguments("NDK_APPLICATION_MK=src/main/cpp/Application.mk")
             }
         }
-    }
-    externalNativeBuild {
-        ndkBuild {
-            path("src/main/cpp/Android.mk")
-        }
-    }
 }
 
-tasks.register<Exec>("ArtRestart") {
-    group = "module"
-    description = "Restart ART (zygote) safely without full reboot"
-    isIgnoreExitValue = true
-    val devices = try {
-    "adb devices".execute().trim().lines().drop(1).filter { it.isNotBlank() }
-    } catch (e: Exception) {
-    emptyList()
-    }
-    if (devices.isNotEmpty()) {
-        val serial = devices.first().split("\\s+".toRegex())[0]
-        commandLine(
-            "adb", "-s", serial, "shell", "su", "-c",
-            """
-            killall zygote
-            killall zygote64
-            start zygote
-            start zygote64
-            exit 0
-            """.trimIndent()
-        )
-    } else {
-        commandLine("adb", "devices")
-    }
-
-    onlyIf { devices.isNotEmpty() }
-}
-
-fun String.execute(): String {
-    val process = Runtime.getRuntime().exec(this)
-    process.waitFor()
-    return process.inputStream.bufferedReader().readText()
-}
 
 androidComponents.onVariants { variant ->
     afterEvaluate {
@@ -147,49 +104,5 @@ androidComponents.onVariants { variant ->
             from(moduleDir)
         }
 
-        val devices = try {
-            "adb devices".execute().trim().lines().drop(1).filter { it.isNotBlank() }
-        } catch (e: Exception) {
-            emptyList()
-        }
-        val adbBase = if (devices.isNotEmpty()) {
-            listOf("adb", "-s", devices.first().split("\\s+".toRegex())[0])
-        } else {
-            listOf("adb")
-        }
-
-        val pushTask = task<Exec>("push$variantCapped") {
-            group = "module"
-            dependsOn(zipTask)
-            commandLine(adbBase + listOf("push", zipTask.outputs.files.singleFile.path, "/data/local/tmp"))
-            onlyIf { devices.isNotEmpty() }
-        }
-
-        val installKsuTask = task<Exec>("installKsu$variantCapped") {
-            group = "module"
-            dependsOn(pushTask)
-            commandLine(
-                adbBase + listOf(
-                    "shell", "su", "-c",
-                    "/data/adb/ksud module install /data/local/tmp/$zipFileName"
-                )
-            )
-            onlyIf { devices.isNotEmpty() }
-        }
-
-        val installMagiskTask = task<Exec>("installMagisk$variantCapped") {
-            group = "module"
-            dependsOn(pushTask)
-            commandLine(
-                adbBase + listOf(
-                    "shell",
-                    "su",
-                    "-M",
-                    "-c",
-                    "magisk --install-module /data/local/tmp/$zipFileName"
-                )
-            )
-            onlyIf { devices.isNotEmpty() }
-        }
     }
 }

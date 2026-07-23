@@ -1,51 +1,48 @@
-TMPDIR_FOR_VERIFY="$TMPDIR/.vunzip"
-mkdir "$TMPDIR_FOR_VERIFY"
+#!/system/bin/sh
+# V2 payload verifier.  This file is sourced by customize.sh after that script
+# validates this verifier's own checksum.
+
+TMPDIR_FOR_VERIFY="${TMPDIR}/.inline_hook_spoof_v2_verify"
+mkdir -p "$TMPDIR_FOR_VERIFY"
 
 abort_verify() {
   ui_print "*********************************************************"
   ui_print "! $1"
-  ui_print "! This zip may be corrupted, please try downloading again"
-  abort    "*********************************************************"
+  ui_print "! The module ZIP failed an integrity check"
+  abort "*********************************************************"
 }
 
-# extract <zip> <file> <target dir> <junk paths>
+# extract <zip> <entry> <destination-directory> [junk-paths]
+# Verifies <entry>.sha256 before returning.  If junk-paths is true, the entry
+# is flattened into destination-directory, matching Magisk module conventions.
 extract() {
-  zip=$1
-  file=$2
-  dir=$3
-  junk_paths=$4
-  [ -z "$junk_paths" ] && junk_paths=false
-  opts="-o"
-  [ $junk_paths = true ] && opts="-oj"
+  zip_file=$1
+  entry=$2
+  destination=$3
+  junk_paths=${4:-false}
 
-  file_path=""
-  hash_path=""
-  if [ $junk_paths = true ]; then
-    file_path="$dir/$(basename "$file")"
-    hash_path="$TMPDIR_FOR_VERIFY/$(basename "$file").sha256"
+  [ -n "$zip_file" ] && [ -n "$entry" ] && [ -n "$destination" ] || abort_verify "Invalid extraction request"
+  mkdir -p "$destination" || abort_verify "Could not create extraction directory"
+
+  if [ "$junk_paths" = true ]; then
+    output_path="$destination/$(basename "$entry")"
+    unzip_options="-oj"
   else
-    file_path="$dir/$file"
-    hash_path="$TMPDIR_FOR_VERIFY/$file.sha256"
+    output_path="$destination/$entry"
+    unzip_options="-o"
   fi
 
-  unzip $opts "$zip" "$file" -d "$dir" >&2
-  [ -f "$file_path" ] || abort_verify "$file not exists"
+  expected_hash=$(unzip -p "$zip_file" "$entry.sha256" 2>/dev/null | tr -d '\r\n')
+  [ -n "$expected_hash" ] || abort_verify "Missing checksum for $entry"
+  case "$expected_hash" in
+    *[!0123456789abcdef]*) abort_verify "Invalid checksum format for $entry" ;;
+  esac
+  [ ${#expected_hash} -eq 64 ] || abort_verify "Invalid checksum length for $entry"
 
-  unzip $opts "$zip" "$file.sha256" -d "$TMPDIR_FOR_VERIFY" >&2
-  [ -f "$hash_path" ] || abort_verify "$file.sha256 not exists"
+  unzip $unzip_options "$zip_file" "$entry" -d "$destination" >&2 || abort_verify "Could not extract $entry"
+  [ -f "$output_path" ] || abort_verify "$entry was not extracted"
 
-  (echo "$(cat "$hash_path")  $file_path" | sha256sum -c -s -) || abort_verify "Failed to verify $file"
-  ui_print "- Verified $file" >&1
+  actual_hash=$(sha256sum "$output_path" | awk '{print $1}')
+  [ "$actual_hash" = "$expected_hash" ] || abort_verify "Checksum mismatch for $entry"
+  ui_print "- Verified $entry"
 }
-
-file="META-INF/com/google/android/update-binary"
-file_path="$TMPDIR_FOR_VERIFY/$file"
-hash_path="$file_path.sha256"
-unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR_FOR_VERIFY" >&2
-[ -f "$file_path" ] || abort_verify "$file not exists"
-if [ -f "$hash_path" ]; then
-  (echo "$(cat "$hash_path")  $file_path" | sha256sum -c -s -) || abort_verify "Failed to verify $file"
-  ui_print "- Verified $file" >&1
-else
-  ui_print "- Download from Magisk app"
-fi

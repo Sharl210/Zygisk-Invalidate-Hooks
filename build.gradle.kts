@@ -16,11 +16,11 @@ fun String.execute(currentWorkingDir: File = file("./")): String {
 }
 
 val moduleId by extra("inline_hook_spoof")
-val moduleName by extra("Inline Hook Spoof")
-val description by extra("Invalidate inline hooks for libart.so to bypass detections.")
-val verName by extra("v1")
-val verCode by extra(12)
-val commitHash by extra("d7cdec5")
+val moduleName by extra("Inline Hook Spoof V2")
+val description by extra("Original config-compatible inline hook restoration with V2 reliability upgrades.")
+val verName by extra("v2.9.2")
+val verCode by extra(29200)
+val commitHash by extra("v2-safe-restore")
 val abiList by extra(listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64"))
 
 val androidMinSdkVersion by extra(26)

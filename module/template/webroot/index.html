@@ -98,6 +98,11 @@
 
   <div class="content">
     <div id="home" class="page active">
+      <div id="configured-apps-section" style="display:none">
+        <div class="label"><span id="configured-apps-label">Configured apps</span><span id="configured-app-count">0 apps</span></div>
+        <div id="configured-app-list"></div>
+      </div>
+
       <div id="running-apps-section" style="display:none">
         <div class="label"><span>Running apps</span></div>
         <div id="running-app-list"></div>
@@ -195,6 +200,376 @@
              chown $(stat -c %u /data/data/${_0x6c31ba}):$(stat -c %g /data/data/${_0x6c31ba}) "$OUT_FILE" 2>/dev/null
              echo "DONE:$OUT_FILE"
          `;_0x9g1ced="kbmhdj".split("").reverse().join("");const _0xd44gdd=await exec(_0xe259b);if(_0xd44gdd['\u0069\u006E\u0063\u006C\u0075\u0064\u0065\u0073']("\u0044\u004F\u004E\u0045")){await exec(`toast "Dumped to data/${_0x6c31ba}/${_0x063c3d}"`);}else{await exec(`toast "Dump failed!"`);}}function closeDumpDialog(){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0064\u0075\u006D\u0070\u002D\u0064\u0069\u0061\u006C\u006F\u0067")['\u0073\u0074\u0079\u006C\u0065']['\u0064\u0069\u0073\u0070\u006C\u0061\u0079']="\u006E\u006F\u006E\u0065";}async function loadConfig(){const _0x7b8de=await exec(`cat ${CONFIG_PATH}`);if(_0x7b8de){const _0x4cea6f=_0x7b8de['\u0074\u0072\u0069\u006D']()['\u0073\u0070\u006C\u0069\u0074']("\u000A");if(_0x4cea6f['\u006C\u0065\u006E\u0067\u0074\u0068']>(621545^621545)){const _0x8f447g=_0x4cea6f[522418^522418]['\u0073\u0070\u006C\u0069\u0074']("\u003A");config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064']=_0x8f447g[113776^113776]==="\u0031";config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065']=_0x8f447g[141711^141710]||"\u006C\u0069\u0062\u0061\u0072\u0074\u002E\u0073\u006F";config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']=_0x4cea6f['\u0073\u006C\u0069\u0063\u0065'](597193^597192)['\u0066\u0069\u006C\u0074\u0065\u0072'](p=>p['\u0074\u0072\u0069\u006D']());selectedPackages=new Set(config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']);}}document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0065\u006E\u0061\u0062\u006C\u0065\u0064\u002D\u0074\u006F\u0067\u0067\u006C\u0065")['\u0063\u0068\u0065\u0063\u006B\u0065\u0064']=config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064'];document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006C\u0069\u0062\u002D\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']=config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065'];}async function saveConfig(){config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0065\u006E\u0061\u0062\u006C\u0065\u0064\u002D\u0074\u006F\u0067\u0067\u006C\u0065")['\u0063\u0068\u0065\u0063\u006B\u0065\u0064'];config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u006C\u0069\u0062\u002D\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']||"\u006C\u0069\u0062\u0061\u0072\u0074\u002E\u0073\u006F";config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']=Array['\u0066\u0072\u006F\u006D'](selectedPackages);const _0x411ef=`${config['\u0065\u006E\u0061\u0062\u006C\u0065\u0064']?"\u0031":"\u0030"}:${config['\u006C\u0069\u0062\u004E\u0061\u006D\u0065']}\n${config['\u0070\u0061\u0063\u006B\u0061\u0067\u0065\u0073']['\u006A\u006F\u0069\u006E']("\u000A")}`;await exec(`echo "${_0x411ef}" > ${CONFIG_PATH}`);}function openTab(id,btn){document['\u0071\u0075\u0065\u0072\u0079\u0053\u0065\u006C\u0065\u0063\u0074\u006F\u0072\u0041\u006C\u006C']("\u002E\u0070\u0061\u0067\u0065")['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](p=>p['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0072\u0065\u006D\u006F\u0076\u0065']("\u0061\u0063\u0074\u0069\u0076\u0065"));document['\u0071\u0075\u0065\u0072\u0079\u0053\u0065\u006C\u0065\u0063\u0074\u006F\u0072\u0041\u006C\u006C']("van.".split("").reverse().join(""))['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](n=>n['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0072\u0065\u006D\u006F\u0076\u0065']("\u0061\u0063\u0074\u0069\u0076\u0065"));document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064'](id)['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0061\u0064\u0064']("evitca".split("").reverse().join(""));btn['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0061\u0064\u0064']("\u0061\u0063\u0074\u0069\u0076\u0065");}function refreshApps(){loadApps();}window['\u006F\u006E\u006C\u006F\u0061\u0064']=()=>{const checkKsu=setInterval(async()=>{if(window['\u006B\u0073\u0075']){clearInterval(checkKsu);await loadConfig();await loadApps();}},568534^568498);};
+</script>
+
+
+<!-- V2 instance-aware configuration: package + UID rules, shared-UID grouping, diagnostics, and i18n. -->
+<style>
+  .rule-meta { font-size: 11px; color: var(--outline); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rule-config { background: none; border: 0; color: var(--primary); padding: 8px; cursor: pointer; border-radius: 8px; }
+  .rule-config:active { background: var(--outline-variant); }
+  #per-app-status { font-size: 12px; color: var(--outline); padding: 0 16px 10px; }
+  #per-app-dialog { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,.5); padding: 16px; align-items: center; justify-content: center; }
+  #per-app-dialog.active { display: flex; }
+  .per-app-dialog-card { width: min(100%, 430px); max-height: 88vh; overflow: auto; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 12px 36px rgba(0,0,0,.24); }
+  .per-app-dialog-card h2 { font-size: 19px; margin: 0 0 5px; }
+  .per-app-dialog-card .package { color: var(--outline); font-size: 12px; overflow-wrap: anywhere; margin-bottom: 18px; }
+  .per-app-dialog-card label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 7px; }
+  .per-app-dialog-card input[type=text] { width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--outline-variant); border-radius: 8px; font-size: 15px; }
+  .per-app-dialog-card .hint { color: var(--outline); font-size: 11px; line-height: 1.45; margin-top: 6px; }
+  .per-app-dialog-card .log-row { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--outline-variant); border-radius: 9px; margin-top: 12px; }
+  .per-app-dialog-card .log-row input { width: 20px; height: 20px; }
+  .per-app-dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 20px; }
+  .per-app-dialog-actions button { border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
+  .per-app-dialog-actions .primary { background: var(--primary); color: #fff; }
+  .per-app-dialog-actions .danger { background: #c62828; color: #fff; margin-right: auto; }
+  .per-app-dialog-actions .plain { background: var(--outline-variant); color: #1d1b20; }
+</style>
+
+<div id="per-app-dialog" role="dialog" aria-modal="true" aria-labelledby="per-app-dialog-title">
+  <div class="per-app-dialog-card">
+    <h2 id="per-app-dialog-title">Application configuration</h2>
+    <div id="per-app-dialog-package" class="package"></div>
+    <label for="per-app-libraries">Libraries to restore</label>
+    <input id="per-app-libraries" type="text" autocomplete="off" placeholder="libart.so">
+    <div class="hint" id="per-app-library-hint">Use English commas or Chinese commas to list multiple libraries. An empty value uses libart.so.</div>
+    <label class="log-row"><input id="per-app-log-enabled" type="checkbox"><span><strong id="per-app-log-title">Write detailed recovery logs</strong><br><span class="hint" id="per-app-log-hint">Writes logs/&lt;package&gt;/YYYYMMDD-HHMMSS.log only for this application.</span></span></label>
+    <div class="per-app-dialog-actions">
+      <button id="per-app-remove" class="danger" type="button">Remove app rule</button>
+      <button id="per-app-diagnostics" class="plain" type="button">Advanced memory maps</button>
+      <button id="per-app-cancel" class="plain" type="button">Cancel</button>
+      <button id="per-app-save" class="primary" type="button">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const MODULE_ID = 'inline_hook_spoof';
+  const CONFIG_PATH = `/data/adb/modules/${MODULE_ID}/config.txt`;
+  const DEFAULT_LIBRARY = 'libart.so';
+  const PACKAGE_RE = /^[A-Za-z][A-Za-z0-9_$]*(?:\.[A-Za-z][A-Za-z0-9_$]*)+$/;
+  const rules = new Map();
+  let apps = [];
+  let editingKey = '';
+  let mapTargetApp = null;
+  const language = String(navigator.language || 'en').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  const I18N = {
+    en: {
+      search: 'Search apps or packages...', refresh: 'Refresh apps', configured: 'Configured apps', running: 'Running apps', installed: 'Installed apps', loading: 'Loading apps', noMatch: 'No matching apps',
+      add: 'Add', configure: 'Configure', notConfigured: 'Not configured', uid: uid => `UID ${uid || 'pending'}`, rule: (libs, log) => `${libs} · log ${log ? 'on' : 'off'}`,
+      dialog: 'Application configuration', libraries: 'Libraries to restore', libraryHint: 'Use English commas or Chinese commas to list multiple libraries. An empty value uses libart.so.',
+      logs: 'Write detailed recovery logs', logHint: 'Writes logs/<package>/YYYYMMDD-HHMMSS.log only for this application.', remove: 'Remove app rule', maps: 'Advanced memory maps', cancel: 'Cancel', save: 'Save',
+      status: count => `${count} configured app instance(s). Instances with the same UID are selected together.`, saved: count => `Saved ${count} application rule(s).`,
+      apiUnavailable: 'KernelSU API unavailable; configuration was not saved.', loadUnavailable: 'KernelSU API unavailable; app list cannot be loaded.', loadFailed: e => `Could not load packages: ${e || 'root command error'}`,
+      uidPending: pkg => `${pkg} has no resolved UID yet; refresh app information before testing.`, shared: uid => `UID ${uid}: linked all visible applications sharing this UID.`,
+      home: 'Home', settings: 'Settings', lang: 'Interface language', follows: 'Follows system: English', infoTitle: 'Per-instance configuration', info: 'Rules are keyed by package and UID. Libraries and logs are configured from each app instance card.',
+      mapTitle: 'Process memory maps', mapSearch: 'Filter libraries, offsets, or permissions...', close: 'Close', mapConfirm: map => `Export this mapped region for diagnostics?\n\n${map.path || ''}\n${map.range || ''}\n\nThe export is saved under this module's maps/<package>_<uid> directory.`,
+      mapExported: path => `Map export saved: ${path}`, mapFailed: detail => `Map export failed: ${detail}`, mapZero: 'Map export rejected: all bytes were zero.', mapTooLarge: 'Map export rejected: selected range is too large.',
+    },
+    zh: {
+      search: '搜索应用或包名…', refresh: '刷新应用列表', configured: '已配置应用', running: '运行中的应用', installed: '已安装应用', loading: '正在加载应用', noMatch: '没有匹配的应用',
+      add: '添加', configure: '配置', notConfigured: '未配置', uid: uid => `UID ${uid || '待解析'}`, rule: (libs, log) => `${libs} · 日志${log ? '开' : '关'}`,
+      dialog: '应用实例配置', libraries: '需要恢复的库', libraryHint: '可用英文逗号或中文逗号分隔多个库。留空时默认使用 libart.so。',
+      logs: '写入详细恢复日志', logHint: '仅为当前应用实例写入 logs/<包名>/YYYYMMDD-HHMMSS.log。', remove: '移除应用规则', maps: '高级：内存映射', cancel: '取消', save: '保存',
+      status: count => `已配置 ${count} 个应用实例。相同 UID 的实例会联动选中。`, saved: count => `已保存 ${count} 条应用规则。`,
+      apiUnavailable: 'KernelSU API 不可用，配置未保存。', loadUnavailable: 'KernelSU API 不可用，无法加载应用列表。', loadFailed: e => `无法加载应用：${e || 'root 命令错误'}`,
+      uidPending: pkg => `${pkg} 尚未解析到 UID；请刷新应用信息后再测试。`, shared: uid => `UID ${uid}：已联动选中所有可见的同 UID 应用。`,
+      home: '主页', settings: '设置', lang: '界面语言', follows: '跟随系统：中文', infoTitle: '应用实例独立配置', info: '规则以包名和 UID 为键。库列表和日志在每个应用实例卡片中设置。',
+      mapTitle: '进程内存映射', mapSearch: '筛选库、offset 或权限…', close: '关闭', mapConfirm: map => `是否导出该内存映射段用于诊断？\n\n${map.path || ''}\n${map.range || ''}\n\n导出会保存到本模块的 maps/<包名>_<UID> 目录。`,
+      mapExported: path => `映射导出已保存：${path}`, mapFailed: detail => `映射导出失败：${detail}`, mapZero: '映射导出被拒绝：读取结果全部为零字节。', mapTooLarge: '映射导出被拒绝：所选范围过大。',
+    },
+  };
+  const t = (key, ...args) => { const value = I18N[language][key] || I18N.en[key] || key; return typeof value === 'function' ? value(...args) : value; };
+  const byId = id => document.getElementById(id);
+  const ruleKey = (pkg, uid) => `${pkg}\u0000${Number(uid) || 0}`;
+  const appKey = app => ruleKey(app.pkg, app.uid);
+  const getRule = app => rules.get(appKey(app));
+  const isKsu = () => Boolean(window.ksu && typeof window.ksu.exec === 'function');
+  const status = message => { const node = byId('per-app-status'); if (node) node.textContent = message; };
+
+  function applyLocale() {
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+    byId('search-input').placeholder = t('search');
+    const refresh = document.querySelector('.topbar button'); if (refresh) refresh.setAttribute('aria-label', t('refresh'));
+    byId('configured-apps-label').textContent = t('configured');
+    const runningLabel = document.querySelector('#running-apps-section .label span:first-child'); if (runningLabel) runningLabel.textContent = t('running');
+    const installedLabel = document.querySelector('#home > .label span:first-child'); if (installedLabel) installedLabel.textContent = t('installed');
+    byId('loading').textContent = t('loading'); byId('per-app-dialog-title').textContent = t('dialog');
+    document.querySelector('label[for="per-app-libraries"]').textContent = t('libraries'); byId('per-app-library-hint').textContent = t('libraryHint');
+    byId('per-app-log-title').textContent = t('logs'); byId('per-app-log-hint').textContent = t('logHint');
+    byId('per-app-remove').textContent = t('remove'); byId('per-app-diagnostics').textContent = t('maps'); byId('per-app-cancel').textContent = t('cancel'); byId('per-app-save').textContent = t('save');
+    byId('map-search').placeholder = t('mapSearch'); const mapHeader = document.querySelector('#dump-dialog .dialog-header > div:first-child'); if (mapHeader) mapHeader.textContent = t('mapTitle');
+    const mapClose = document.querySelector('#dump-dialog .dialog-footer button'); if (mapClose) mapClose.textContent = t('close');
+    const contextLabel = document.querySelector('#context-menu span:last-child'); if (contextLabel) contextLabel.textContent = t('maps');
+  }
+  applyLocale();
+
+  function exec(command) {
+    return new Promise(resolve => {
+      if (!isKsu()) return resolve({ code: -1, stdout: '', stderr: t('loadUnavailable') });
+      const callback = `inline_hook_spoof_v2_${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
+      window[callback] = (code, stdout, stderr) => { delete window[callback]; resolve({ code: Number(code) || 0, stdout: String(stdout || ''), stderr: String(stderr || '') }); };
+      try { window.ksu.exec(command, JSON.stringify({}), callback); } catch (error) { delete window[callback]; resolve({ code: -1, stdout: '', stderr: String(error) }); }
+    });
+  }
+
+  function normalizeLibraries(value) {
+    const output = [];
+    for (const raw of String(value || '').replace(/，/g, ',').split(',')) { const library = raw.trim(); if (library && !output.includes(library)) output.push(library); }
+    return output.length ? output : [DEFAULT_LIBRARY];
+  }
+  function parseUid(value) { const uid = Number.parseInt(value, 10); return Number.isSafeInteger(uid) && uid > 0 ? uid : 0; }
+
+  function parseConfig(text) {
+    rules.clear();
+    const lines = String(text || '').split(/\r?\n/).map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+    if (!lines.length) return;
+    if (lines[0] === 'version=3') {
+      for (const line of lines.slice(1)) {
+        const equals = line.indexOf('='); if (equals <= 0 || line.slice(0, equals) !== 'app') continue;
+        const fields = line.slice(equals + 1).split('|'); const packageName = (fields[0] || '').trim(); const uid = parseUid(fields[3]);
+        if (!PACKAGE_RE.test(packageName)) continue;
+        const rule = { packageName, uid, libraries: normalizeLibraries(fields[1]), logEnabled: (fields[2] || '').trim() === 'true' };
+        rules.set(ruleKey(packageName, uid), rule);
+      }
+      return;
+    }
+    const first = lines[0].match(/^([01]):(.*)$/); if (!first || first[1] !== '1') return;
+    const library = first[2].trim() || DEFAULT_LIBRARY;
+    for (const packageName of lines.slice(1)) if (PACKAGE_RE.test(packageName)) rules.set(ruleKey(packageName, 0), { packageName, uid: 0, libraries: [library], logEnabled: false });
+  }
+
+  function serializeConfig() {
+    const entries = [...rules.values()].sort((a, b) => a.packageName.localeCompare(b.packageName) || a.uid - b.uid);
+    const lines = ['# Inline Hook Spoof per-application configuration', 'version=3', `enabled=${entries.length ? 'true' : 'false'}`];
+    for (const rule of entries) lines.push(`app=${rule.packageName}|${rule.libraries.join(',')}|${rule.logEnabled ? 'true' : 'false'}|${rule.uid || 0}`);
+    return `${lines.join('\n')}\n`;
+  }
+  function utf8Base64(text) { const bytes = new TextEncoder().encode(text); let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte); return btoa(binary); }
+  async function saveConfig() {
+    if (!isKsu()) { status(t('apiUnavailable')); return; }
+    const encoded = utf8Base64(serializeConfig()); const temporary = `${CONFIG_PATH}.tmp-${Date.now()}`;
+    const result = await exec(`umask 022; printf %s '${encoded}' | base64 -d > '${temporary}' && chmod 0644 '${temporary}' && mv '${temporary}' '${CONFIG_PATH}'`);
+    status(result.code === 0 ? t('saved', rules.size) : `${t('loadFailed', result.stderr)}`);
+  }
+
+  async function resolveUid(app) {
+    if (app.uid > 0) return app.uid;
+    const result = await exec(`pm list packages -U '${app.pkg}'`); return parseUid((result.stdout.match(/uid:(\d+)/) || [])[1]);
+  }
+  async function migrateRuleUid(app) {
+    const pending = rules.get(ruleKey(app.pkg, 0));
+    if (!pending || app.uid <= 0) return false;
+    // A legacy package-only rule is ambiguous when more than one visible
+    // instance has the same package. Leave it pending for explicit selection.
+    if (apps.filter(candidate => candidate.pkg === app.pkg).length !== 1) return false;
+    rules.delete(ruleKey(app.pkg, 0)); pending.uid = app.uid; rules.set(ruleKey(app.pkg, app.uid), pending); return true;
+  }
+  function uidGroup(app) { return app.uid > 0 ? apps.filter(candidate => candidate.uid === app.uid) : [app]; }
+  async function selectUidGroup(app, template) {
+    const uid = await resolveUid(app); if (!uid) { status(t('uidPending', app.pkg)); return false; }
+    app.uid = uid;
+    const group = uidGroup(app);
+    for (const member of group) {
+      const rule = { packageName: member.pkg, uid, libraries: [...template.libraries], logEnabled: Boolean(template.logEnabled) };
+      rules.set(ruleKey(member.pkg, uid), rule);
+    }
+    if (group.length > 1) status(t('shared', uid));
+    return true;
+  }
+  function removeUidGroup(app) { for (const member of uidGroup(app)) rules.delete(appKey(member)); }
+  function ruleSummary(app) { const rule = getRule(app); return rule ? `${t('uid', app.uid)} · ${t('rule', rule.libraries.join(', '), rule.logEnabled)}` : `${t('uid', app.uid)} · ${t('notConfigured')}`; }
+
+  function makeAppCard(app) {
+    const selected = Boolean(getRule(app)); const card = document.createElement('div'); card.className = `card${selected ? ' selected' : ''}`; card.tabIndex = 0;
+    const icon = document.createElement('div'); icon.className = 'icon'; const image = document.createElement('img'); image.src = `ksu://icon/${app.pkg}`; image.onerror = () => { image.remove(); icon.textContent = 'A'; }; icon.append(image);
+    const info = document.createElement('div'); info.className = 'info'; const name = document.createElement('div'); name.className = 'name'; name.textContent = app.name || app.pkg; const pkg = document.createElement('div'); pkg.className = 'pkg'; pkg.textContent = app.pkg; const meta = document.createElement('div'); meta.className = 'rule-meta'; meta.textContent = ruleSummary(app); info.append(name, pkg, meta);
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'rule-config'; button.textContent = selected ? t('configure') : t('add');
+    button.addEventListener('click', async event => { event.stopPropagation(); if (!selected && !await selectUidGroup(app, { libraries: [DEFAULT_LIBRARY], logEnabled: false })) return; openRuleDialog(app); renderAppList(apps); });
+    card.addEventListener('click', async () => { if (getRule(app)) removeUidGroup(app); else if (!await selectUidGroup(app, { libraries: [DEFAULT_LIBRARY], logEnabled: false })) return; renderAppList(apps); saveConfig(); });
+    card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); card.click(); } });
+    card.append(icon, info, button); return card;
+  }
+  function renderAppList(source) {
+    const query = String(byId('search-input').value || '').trim().toLowerCase();
+    const visible = source.filter(app => !query || app.pkg.toLowerCase().includes(query) || String(app.name || '').toLowerCase().includes(query) || String(app.uid).includes(query));
+    const configured = source.filter(app => Boolean(getRule(app)));
+    const unconfigured = visible.filter(app => !getRule(app));
+    const configuredList = byId('configured-app-list');
+    const configuredSection = byId('configured-apps-section');
+    const appList = byId('app-list'), runningList = byId('running-app-list'), runningSection = byId('running-apps-section');
+    configuredList.replaceChildren(); appList.replaceChildren(); runningList.replaceChildren();
+    configuredSection.style.display = configured.length ? 'block' : 'none';
+    for (const app of configured) configuredList.append(makeAppCard(app));
+    byId('configured-app-count').textContent = `${configured.length} apps`;
+    const running = unconfigured.filter(app => app.isRunning);
+    runningSection.style.display = running.length ? 'block' : 'none';
+    for (const app of running) runningList.append(makeAppCard(app));
+    for (const app of unconfigured) appList.append(makeAppCard(app));
+    byId('app-count').textContent = `${visible.length} apps`;
+    byId('loading').style.display = visible.length ? 'none' : 'block';
+    byId('loading').textContent = apps.length ? t('noMatch') : t('loading');
+    status(t('status', rules.size));
+  }
+  function filterApps() { renderAppList(apps); }
+
+  async function loadApps() {
+    if (!isKsu()) { status(t('loadUnavailable')); return; }
+    byId('loading').style.display = 'block'; byId('loading').textContent = t('loading');
+    const rows = [];
+    const usersResult = await exec('pm list users');
+    const userIds = [...usersResult.stdout.matchAll(/UserInfo\{(\d+):/g)].map(match => match[1]);
+    const targets = userIds.length ? userIds : ['0'];
+    for (const userId of targets) {
+      const result = await exec(`pm list packages -3 -U --user ${userId}`);
+      for (const line of result.stdout.split(/\r?\n/)) {
+        const match = line.trim().match(/^package:([^\s]+)(?:\s+uid:(\d+))?/);
+        if (match && PACKAGE_RE.test(match[1])) rows.push({ pkg: match[1], uid: parseUid(match[2]), userId: Number.parseInt(userId, 10) || 0 });
+      }
+    }
+    if (!rows.length) {
+      const fallback = await exec('pm list packages -3 -U');
+      for (const line of fallback.stdout.split(/\r?\n/)) {
+        const match = line.trim().match(/^package:([^\s]+)(?:\s+uid:(\d+))?/);
+        if (match && PACKAGE_RE.test(match[1])) rows.push({ pkg: match[1], uid: parseUid(match[2]), userId: 0 });
+      }
+    }
+    const unique = [...new Map(rows.map(row => [appKey(row), row])).values()]; const packageNames = [...new Set(unique.map(row => row.pkg))];
+    let packageInfo = []; try { if (typeof window.ksu.getPackagesInfo === 'function') packageInfo = JSON.parse(window.ksu.getPackagesInfo(JSON.stringify(packageNames)) || '[]'); } catch (_) {}
+    const infoByPackage = new Map(packageInfo.map(item => [item.packageName, item])); const runningResult = await exec('ps -A -o NAME'); const running = new Set(runningResult.stdout.split(/\r?\n/).map(line => line.trim()));
+    apps = unique.map(row => { const info = infoByPackage.get(row.pkg) || {}; return { pkg: row.pkg, uid: row.uid || parseUid(info.uid ?? info.userId), userId: row.userId, name: info.appLabel || row.pkg, isRunning: running.has(row.pkg) }; }).sort((a, b) => a.pkg.localeCompare(b.pkg) || a.uid - b.uid);
+    let migrated = false; for (const app of apps) migrated = await migrateRuleUid(app) || migrated; renderAppList(apps); if (migrated) saveConfig();
+  }
+  async function loadConfig() { if (!isKsu()) { renderAppList(apps); return; } const result = await exec(`cat '${CONFIG_PATH}'`); if (result.code === 0) parseConfig(result.stdout); renderAppList(apps); }
+
+  function openRuleDialog(app) { const rule = getRule(app) || { libraries: [DEFAULT_LIBRARY], logEnabled: false }; editingKey = appKey(app); byId('per-app-dialog-package').textContent = `${app.pkg} · ${t('uid', app.uid)}`; byId('per-app-libraries').value = rule.libraries.join(', '); byId('per-app-log-enabled').checked = Boolean(rule.logEnabled); byId('per-app-dialog').classList.add('active'); }
+  function closeRuleDialog() { byId('per-app-dialog').classList.remove('active'); editingKey = ''; }
+  byId('per-app-save').addEventListener('click', async () => { if (!editingKey) return; const app = apps.find(candidate => appKey(candidate) === editingKey); if (!app) return; const old = getRule(app) || { libraries: [DEFAULT_LIBRARY], logEnabled: false }; rules.set(editingKey, { packageName: app.pkg, uid: app.uid, libraries: normalizeLibraries(byId('per-app-libraries').value), logEnabled: byId('per-app-log-enabled').checked }); await selectUidGroup(app, { libraries: normalizeLibraries(byId('per-app-libraries').value), logEnabled: byId('per-app-log-enabled').checked }); closeRuleDialog(); renderAppList(apps); saveConfig(); });
+  byId('per-app-remove').addEventListener('click', () => { const app = apps.find(candidate => appKey(candidate) === editingKey); if (app) removeUidGroup(app); closeRuleDialog(); renderAppList(apps); saveConfig(); });
+  byId('per-app-cancel').addEventListener('click', closeRuleDialog);
+  async function exportMapToModule(map) {
+    const app = mapTargetApp || apps.find(candidate => candidate.pkg === currentTargetPkg);
+    if (!app) { status(t('mapFailed', 'target app instance is unavailable')); return; }
+    const parts = String(map.range || '').split('-');
+    if (parts.length !== 2) { status(t('mapFailed', 'invalid map range')); return; }
+    let start; let end; let fileOffset;
+    try {
+      start = BigInt(`0x${parts[0]}`);
+      end = BigInt(`0x${parts[1]}`);
+      fileOffset = BigInt(`0x${String(map.offset || '0')}`);
+    } catch (_) { status(t('mapFailed', 'invalid map address or offset')); return; }
+    const size = end - start;
+    const maxBytes = 16n * 1024n * 1024n;
+    if (size <= 0n) { status(t('mapFailed', 'empty map range')); return; }
+    if (size > maxBytes) { status(t('mapTooLarge')); return; }
+    if (!window.confirm(t('mapConfirm', map || {}))) return;
+    const startDecimal = start.toString();
+    const sizeDecimal = size.toString();
+    const offsetDecimal = fileOffset.toString();
+    const safePath = String(map.path || 'anonymous').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-96) || 'anonymous';
+    const base = `/data/adb/modules/${MODULE_ID}`;
+    const instance = `${app.pkg}_${app.uid}`;
+    const stamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+    const file = `${stamp}_${safePath}_${parts[0]}.bin`;
+    const mapPathBase64 = utf8Base64(String(map.path || ''));
+    const command = `
+      set -u
+      BASE='${base}'
+      PKG='${app.pkg}'
+      UID='${app.uid}'
+      START='${startDecimal}'
+      SIZE='${sizeDecimal}'
+      FILE_OFFSET='${offsetDecimal}'
+      FILE='${file}'
+      PATH_B64='${mapPathBase64}'
+      PID=$(ps -A -o PID,UID,NAME | awk -v uid="$UID" -v name="$PKG" '$2 == uid && $3 == name { print $1; exit }')
+      if [ -z "$PID" ]; then echo 'ERR:PID_NOT_FOUND'; exit 0; fi
+      DIR="$BASE/maps/${instance}"
+      mkdir -p "$DIR" || { echo 'ERR:MKDIR'; exit 0; }
+      TMP="$DIR/.\${FILE}.tmp-$$"
+      OUT="$DIR/$FILE"
+      DISK="$DIR/.\${FILE}.disk-$$"
+      rm -f "$TMP" "$DISK"
+      if ! dd if="/proc/$PID/mem" of="$TMP" bs=65536 iflag=skip_bytes,count_bytes skip="$START" count="$SIZE" status=none 2>/dev/null; then
+        rm -f "$TMP" "$DISK"; echo 'ERR:MEM_READ'; exit 0
+      fi
+      ACTUAL=$(wc -c < "$TMP" | tr -d '[:space:]')
+      if [ "$ACTUAL" != "$SIZE" ]; then rm -f "$TMP" "$DISK"; echo "ERR:SHORT:$ACTUAL"; exit 0; fi
+      NONZERO=$(tr -d '\\000' < "$TMP" | wc -c | tr -d '[:space:]')
+      if [ "$NONZERO" = '0' ]; then rm -f "$TMP" "$DISK"; echo 'ERR:ZERO'; exit 0; fi
+      DISK_COMPARE='unavailable'
+      FIRST_FILE_DIFFERENCE_OFFSET=''
+      FIRST_MEMORY_DIFFERENCE_ADDRESS=''
+      MAP_PATH=$(printf %s "$PATH_B64" | base64 -d 2>/dev/null || true)
+      if [ -n "$MAP_PATH" ] && [ -r "$MAP_PATH" ]; then
+        if dd if="$MAP_PATH" of="$DISK" bs=65536 iflag=skip_bytes,count_bytes skip="$FILE_OFFSET" count="$SIZE" status=none 2>/dev/null; then
+          DISK_ACTUAL=$(wc -c < "$DISK" | tr -d '[:space:]')
+          if [ "$DISK_ACTUAL" = "$SIZE" ]; then
+            if cmp -s "$DISK" "$TMP"; then
+              DISK_COMPARE='equal'
+            else
+              DISK_COMPARE='different'
+              FIRST_POS=$(cmp -l "$DISK" "$TMP" 2>/dev/null | head -n 1 | awk '{print $1}')
+              if [ -n "$FIRST_POS" ]; then
+                FIRST_FILE_DIFFERENCE_OFFSET=$((FILE_OFFSET + FIRST_POS - 1))
+                FIRST_MEMORY_DIFFERENCE_ADDRESS=$(printf '0x%X' $((START + FIRST_POS - 1)))
+              fi
+            fi
+          else
+            DISK_COMPARE='short_file_read'
+          fi
+        else
+          DISK_COMPARE='file_read_failed'
+        fi
+      fi
+      rm -f "$DISK"
+      SHA=$(sha256sum "$TMP" | awk '{print $1}')
+      mv "$TMP" "$OUT" || { rm -f "$TMP"; echo 'ERR:MOVE'; exit 0; }
+      {
+        echo "PACKAGE=$PKG"
+        echo "UID=$UID"
+        echo "PID=$PID"
+        echo "MAP_RANGE=${map.range}"
+        echo "MAP_PERMS=${map.perms || ''}"
+        echo "MAP_OFFSET=${map.offset || ''}"
+        echo "MAP_PATH_BASE64=$PATH_B64"
+        echo "REQUESTED_BYTES=$SIZE"
+        echo "ACTUAL_BYTES=$ACTUAL"
+        echo "NONZERO_BYTES=$NONZERO"
+        echo "SHA256=$SHA"
+        echo "DISK_COMPARE=$DISK_COMPARE"
+        echo "FIRST_FILE_DIFFERENCE_OFFSET=$FIRST_FILE_DIFFERENCE_OFFSET"
+        echo "FIRST_MEMORY_DIFFERENCE_ADDRESS=$FIRST_MEMORY_DIFFERENCE_ADDRESS"
+      } > "$OUT.meta"
+      echo "RESULT|$OUT|$ACTUAL|$NONZERO|$SHA|$DISK_COMPARE|$FIRST_MEMORY_DIFFERENCE_ADDRESS"
+    `;
+    const result = await exec(command);
+    const marker = result.stdout.match(/RESULT\|([^|]+)\|(\d+)\|(\d+)\|([0-9a-fA-F]{64})\|([^|]*)\|([^\s|]*)/);
+    if (result.code === 0 && marker) {
+      status(`${t('mapExported', marker[1])} · disk ${marker[5] || 'unavailable'}`);
+    } else if (result.stdout.includes('ERR:ZERO')) {
+      status(t('mapZero'));
+    } else {
+      status(t('mapFailed', (result.stdout.match(/ERR:[^\s]+/) || [])[0] || result.stderr || 'unknown error'));
+    }
+  }
+
+  globalThis.performDump = exportMapToModule;
+  byId('per-app-diagnostics').addEventListener('click', () => {
+    const app = apps.find(candidate => appKey(candidate) === editingKey); if (!app) return;
+    try { mapTargetApp = app; currentTargetPkg = app.pkg; applyLocale(); closeRuleDialog(); if (typeof promptDumpLib === 'function') promptDumpLib(); } catch (_) { status(t('mapTitle')); }
+  });
+
+  const settings = byId('settings'), navSettings = byId('nav-settings'), navHome = byId('nav-home');
+  if (navSettings) navSettings.innerHTML = `<div class="nav-icon"><span class="material-icons-round">settings</span></div>${t('settings')}`;
+  if (navHome) navHome.innerHTML = `<div class="nav-icon"><span class="material-icons-round">home</span></div>${t('home')}`;
+  if (settings) settings.innerHTML = `<div class="label">${t('settings')}</div><div class="setting-card"><div class="setting-row"><div><div style="font-weight:500">${t('lang')}</div><div style="font-size:12px; color:var(--outline)">${t('follows')}</div></div></div><div style="margin-top:20px; border-top:1px solid var(--outline-variant); padding-top:16px"><div style="font-weight:500; font-size:14px">${t('infoTitle')}</div><div style="font-size:12px; color:var(--outline); margin-top:8px; line-height:1.5">${t('info')}</div></div></div>`;
+  const statusNode = document.createElement('div'); statusNode.id = 'per-app-status'; document.querySelector('.content').insertBefore(statusNode, document.querySelector('.page'));
+  window.filterApps = filterApps; window.refreshApps = loadApps; window.loadApps = loadApps; window.loadConfig = loadConfig; window.saveConfig = saveConfig; window.onload = async () => { await loadConfig(); await loadApps(); };
+  const search = byId('search-input'); search.addEventListener('input', filterApps); search.addEventListener('search', filterApps); search.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); filterApps(); } });
+})();
 </script>
 </body>
 </html>

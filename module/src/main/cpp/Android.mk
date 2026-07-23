@@ -9,13 +9,8 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := inline_hook_spoof
 LOCAL_SRC_FILES := main.cpp mainCore.cxx
-
-LOCAL_C_INCLUDES += \
-    $(LOCAL_PATH)/Frida/$(TARGET_ARCH_ABI) \
-    $(LOCAL_PATH)/xdl
-
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/xdl
+LOCAL_CPPFLAGS := -std=c++17 -Wall -Wextra -Werror=return-type
 LOCAL_STATIC_LIBRARIES := xdl
-
-LOCAL_LDLIBS := -llog -ldl -lz
-
+LOCAL_LDLIBS := -llog -ldl
 include $(BUILD_SHARED_LIBRARY)
